@@ -1,0 +1,18 @@
+# Packages the shared conda env (monocular-depth-estimation / monodepth-5060) is missing.
+# Install on the cluster with:
+#   pip install --user -r requirements.txt
+#
+# The cluster env already provides: torch 2.11+cu128, torchvision, PIL, numpy,
+# pandas, pyyaml. Checkpoints (DA-V2) are uploaded manually to checkpoints/.
+
+peft>=0.13                  # LoRA adapters for the DA-V2 backbone
+opencv-python-headless>=4.8  # required by DA-V2's dpt.py (module-level import)
+tensorboard>=2.18            # optional, only used if configured; CSV logging works without it
+segment-anything            # SAM for Stage B region segmentation
+scikit-learn
+
+# Depth Pro (Apple) — installed from source, not PyPI:
+#   git clone https://github.com/apple/ml-depth-pro && cd ml-depth-pro
+#   pip install --user -e .
+#   source get_pretrained_models.sh
+# Copy checkpoints/depth_pro.pt into this project's checkpoints/ directory.

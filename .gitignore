@@ -1,0 +1,44 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+.env
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Training artifacts — ignore all outputs except committed report figures
+# and the diagnostic evidence the README cites (FINDINGS docs + fig2's data).
+outputs/*
+!outputs/figures/
+!outputs/diagnostics/
+outputs/diagnostics/**
+!outputs/diagnostics/**/
+!outputs/diagnostics/**/FINDINGS*.md
+!outputs/diagnostics/boundary_phase0/results.json
+checkpoints/
+logs/
+wandb/
+runs/
+*.ckpt
+*.pt
+*.pth
+
+# Submissions
+submissions/
+*.csv.gz
+
+# Data (never commit data; it lives on the cluster)
+data/
+*.npy
+*.npz
+
+# IDE / OS
+.vscode/
+.idea/
+.DS_Store
+
+# SLURM stdout/stderr
+slurm-*.out
+*.err

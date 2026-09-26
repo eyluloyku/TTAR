@@ -1,0 +1,43 @@
+# Stage A: Depth Anything V2 ViT-S + LoRA fine-tuning on the CIL depth dataset.
+#
+# Override any field from the CLI with dot notation:
+#   python -m src.finetune.train --config configs/finetune/da_v2_vits_lora.yaml \
+#       --set train.batch_size=4 train.lr_head=5e-5
+
+data:
+  root: /cluster/courses/cil/monocular-depth-estimation/train
+  val_frac: 0.05          # ~1130 images held out for validation
+  seed: 42
+  crop_size: 518          # random 518x518 crops from 560x560 during training (518 = 14*37)
+  hflip: 0.5
+  color_jitter: 0.2
+
+model:
+  encoder: vits
+  # Uploaded manually into checkpoints/ (gitignored). Update when you transfer:
+  checkpoint: checkpoints/depth_anything_v2_vits.pth
+  lora:
+    r: 8
+    alpha: 16
+    dropout: 0.05
+    # Encoder attention Linears only — keeps DPT head fully trainable separately.
+    target_modules_regex: "pretrained\\.blocks\\.\\d+\\.attn\\.(qkv|proj)"
+
+train:
+  batch_size: 8
+  val_batch_size: 4       # val runs at native 560x560, heavier than cropped train
+  num_workers: 2          # matches the cluster's default 2-CPU allocation; bump if --cpus-per-task is also raised
+  epochs: 30
+  lr_lora: 5.0e-5
+  lr_head: 1.0e-4
+  weight_decay: 0.01
+  warmup_epochs: 2
+  grad_clip: 1.0
+  silog_lambda: 0.85
+
+logging:
+  out_dir: outputs/stage_a/vits_lora_r8
+  use_tb: true
+  log_every: 50
+
+device: cuda
